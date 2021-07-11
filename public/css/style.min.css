@@ -1168,8 +1168,6 @@ a {
   height: 350px;
   -o-object-fit: cover;
   object-fit: cover;
-  border-radius: 15px;
-  box-shadow: 0 0 5px #9e9e9e;
 }
 
 .catalog__title {
