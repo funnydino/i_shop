@@ -1,63 +1,93 @@
 <template>
-  <section class="catalog">
-    <ProductList :products="products"></ProductList>
-    <ul class="catalog__pagination pagination">
-      <li class="pagination__item">
-        <a
-          class="
-            pagination__link pagination__link--arrow pagination__link--disabled
-          "
-          aria-label="Предыдущая страница"
-        >
-          <svg width="8" height="14" fill="currentColor">
-            <use xlink:href="#icon-arrow-left"></use>
-          </svg>
-        </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link pagination__link--current"> 1 </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#"> 2 </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#"> 3 </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#"> 4 </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#"> ... </a>
-      </li>
-      <li class="pagination__item">
-        <a class="pagination__link" href="#"> 10 </a>
-      </li>
-      <li class="pagination__item">
-        <a
-          class="pagination__link pagination__link--arrow"
-          href="#"
-          aria-label="Следующая страница"
-        >
-          <svg width="8" height="14" fill="currentColor">
-            <use xlink:href="#icon-arrow-right"></use>
-          </svg>
-        </a>
-      </li>
-    </ul>
-  </section>
+  <main class="content container">
+    <div class="content__top content__top--catalog">
+      <h1 class="content__title">Каталог</h1>
+      <span class="content__info"> 152 товара </span>
+    </div>
+
+    <div class="content__catalog">
+      <ProductFilter
+        :price-from.sync="filterPriceFrom"
+        :price-to.sync="filterPriceTo"
+        :category-id.sync="filterCategoryId"
+        :color-id.sync="filterColorId"
+      />
+      <h2 v-if="products.length === 0">
+        Товаров с выбранными параметрами не найдено
+      </h2>
+      <section class="catalog">
+        <ProductList :products="products"></ProductList>
+        <!-- Эквивалентно: <ProductList :products="products"/> -->
+        <BasePagination
+          v-model="page"
+          :count="countProducts"
+          :per-page="productsPerPage"
+        />
+      </section>
+    </div>
+  </main>
 </template>
 
 <script>
-import products from "./data/products";
-import ProductList from "./components/ProductList.vue";
+import products from './data/products';
+import ProductList from './components/ProductList.vue';
+import BasePagination from './components/BasePagination.vue';
+import ProductFilter from './components/ProductFilter.vue';
+import colors from './data/colors';
 
 export default {
-  name: "App",
-  components: { ProductList },
+  name: 'App',
+  components: { ProductList, BasePagination, ProductFilter },
   data() {
     return {
-      products,
+      filterPriceFrom: 0,
+      filterPriceTo: 0,
+      filterCategoryId: 0,
+      filterColorId: 0,
+      page: 1,
+      productsPerPage: 6,
     };
+  },
+  computed: {
+    filteredProducts() {
+      let filteredProducts = products;
+      if (this.filterPriceFrom > 0) {
+        filteredProducts = filteredProducts.filter(
+          (product) => product.price >= this.filterPriceFrom,
+        );
+      }
+      if (this.filterPriceTo > 0) {
+        filteredProducts = filteredProducts.filter(
+          (product) => product.price <= this.filterPriceTo,
+        );
+      }
+      if (this.filterCategoryId) {
+        filteredProducts = filteredProducts.filter(
+          (product) => product.categoryId === this.filterCategoryId,
+        );
+      }
+      if (this.filterColorId) {
+        filteredProducts = filteredProducts.filter(
+          (product) =>
+            // eslint-disable-next-line
+            product.colors.find(
+              (color) =>
+                // eslint-disable-next-line
+                color ===
+                colors.find((col) => col.id === this.filterColorId).value,
+            ),
+          // eslint-disable-next-line
+        );
+      }
+      return filteredProducts;
+    },
+    products() {
+      const offset = (this.page - 1) * this.productsPerPage;
+      return this.filteredProducts.slice(offset, offset + this.productsPerPage);
+    },
+    countProducts() {
+      return this.filteredProducts.length;
+    },
   },
 };
 </script>

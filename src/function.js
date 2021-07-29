@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 function alertMessage(message = 'Vue') {
-  alert(message);
+  console.log(message);
 }
 
 export default alertMessage;
