@@ -179,6 +179,8 @@
 </template>
 
 <script>
+/* eslint-disable */
+
 import categories from '../data/categories';
 import colors from '../data/colors';
 

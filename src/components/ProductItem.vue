@@ -1,6 +1,14 @@
 <template>
   <li class="catalog__item">
-    <a class="catalog__pic" href="#">
+    <a
+      class="catalog__pic"
+      href="#"
+      @click.prevent="
+        goToPage('product', {
+          id: product.id,
+        })
+      "
+    >
       <img
         :src="product.image"
         :srcset="getAdaptiveImage(product.image)"
@@ -12,9 +20,7 @@
       <a href="#"> {{ product.title }} </a>
     </h3>
 
-    <span class="catalog__price">
-      {{ new Intl.NumberFormat('ru').format(product.price) }} ₽
-    </span>
+    <span class="catalog__price"> {{ product.price | numberFormat }} ₽ </span>
 
     <ProductColors
       :key="'colors#' + product.id"
@@ -25,6 +31,8 @@
   </li>
 </template>
 <script>
+import goToPage from '@/helpers/goToPage';
+import numberFormat from '@/helpers/numberFormat';
 import ProductColors from './ProductColors.vue';
 
 export default {
@@ -33,9 +41,13 @@ export default {
       currentItemColor: this.product.colors[0],
     };
   },
+  filters: {
+    numberFormat,
+  },
   components: { ProductColors },
   props: ['product'],
   methods: {
+    goToPage,
     getAdaptiveImage(image) {
       return image.replace('.jpg', '@2x.jpg 2x');
     },
