@@ -1,5 +1,5 @@
 <template>
-  <ul class="colors colors--black">
+  <ul :class="className">
     <li class="colors__item" v-for="color in colors" :key="productId + color">
       <label class="colors__label">
         <input
@@ -21,14 +21,14 @@
 export default {
   data() {
     return {
-      currentItemColor: this.colors[0],
+      currentItemColor: this.currentColor,
     };
   },
   model: {
     prop: 'currentColor',
     event: 'color-change',
   },
-  props: ['colors', 'productId', 'currentColor'],
+  props: ['colors', 'productId', 'currentColor', 'className'],
   methods: {
     changeProductColor() {
       this.$emit('color-change', this.currentItemColor);

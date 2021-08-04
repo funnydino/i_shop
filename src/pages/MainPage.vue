@@ -43,7 +43,7 @@ export default {
     return {
       filterPriceFrom: 0,
       filterPriceTo: 0,
-      filterCategoryId: 0,
+      filterCategoryId: this.$route.params.filter || 0,
       filterColorId: 0,
       page: 1,
       productsPerPage: 6,

@@ -1,23 +1,28 @@
 <template>
   <li class="catalog__item">
-    <a
+    <router-link
       class="catalog__pic"
-      href="#"
-      @click.prevent="
-        goToPage('product', {
-          id: product.id,
-        })
-      "
+      :to="{
+        name: 'product',
+        params: { id: product.id, color: this.currentItemColor },
+      }"
     >
       <img
         :src="product.image"
         :srcset="getAdaptiveImage(product.image)"
         :alt="product.title"
       />
-    </a>
+    </router-link>
 
     <h3 class="catalog__title">
-      <a href="#"> {{ product.title }} </a>
+      <router-link
+        :to="{
+          name: 'product',
+          params: { id: product.id, color: this.currentItemColor },
+        }"
+      >
+        {{ product.title }}
+      </router-link>
     </h3>
 
     <span class="catalog__price"> {{ product.price | numberFormat }} ₽ </span>
@@ -27,6 +32,7 @@
       :colors="product.colors"
       :product-id="product.id"
       v-model="currentItemColor"
+      :className="'colors colors--black'"
     />
   </li>
 </template>

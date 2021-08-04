@@ -1,9 +1,9 @@
 <template>
   <main class="content container">
     <h1>Страница не найдена</h1>
-    <a class="to-main__link" href="#" @click.prevent="goToPage('main')">
+    <router-link class="to-main__link" :to="{ name: 'main' }">
       Вернуться на главную страницу
-    </a>
+    </router-link>
   </main>
 </template>
 
