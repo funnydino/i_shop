@@ -42,5 +42,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.colors__value {
+  box-shadow: 0 0 3px #bebebe;
+}
 </style>

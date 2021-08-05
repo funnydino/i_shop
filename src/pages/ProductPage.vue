@@ -93,53 +93,6 @@
 
             <fieldset class="form__block">
               <legend class="form__legend">Цвет:</legend>
-              <!-- <ul class="colors">
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input
-                      class="colors__radio sr-only"
-                      type="radio"
-                      name="color-item"
-                      value="blue"
-                      checked=""
-                    />
-                    <span
-                      class="colors__value"
-                      style="background-color: #73b6ea"
-                    >
-                    </span>
-                  </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input
-                      class="colors__radio sr-only"
-                      type="radio"
-                      name="color-item"
-                      value="yellow"
-                    />
-                    <span
-                      class="colors__value"
-                      style="background-color: #ffbe15"
-                    >
-                    </span>
-                  </label>
-                </li>
-                <li class="colors__item">
-                  <label class="colors__label">
-                    <input
-                      class="colors__radio sr-only"
-                      type="radio"
-                      name="color-item"
-                      value="gray" />
-                    <span
-                      class="colors__value"
-                      style="background-color: #939393"
-                    >
-                    </span
-                  ></label>
-                </li>
-              </ul> -->
               <ProductColors
                 :key="'colors#' + product.id"
                 :colors="product.colors"
@@ -149,46 +102,12 @@
               />
             </fieldset>
 
-            <fieldset class="form__block">
-              <legend class="form__legend">Объем в ГБ:</legend>
-
-              <ul class="sizes sizes--primery">
-                <li class="sizes__item">
-                  <label class="sizes__label">
-                    <input
-                      class="sizes__radio sr-only"
-                      type="radio"
-                      name="sizes-item"
-                      value="32"
-                    />
-                    <span class="sizes__value"> 32gb </span>
-                  </label>
-                </li>
-                <li class="sizes__item">
-                  <label class="sizes__label">
-                    <input
-                      class="sizes__radio sr-only"
-                      type="radio"
-                      name="sizes-item"
-                      value="64"
-                    />
-                    <span class="sizes__value"> 64gb </span>
-                  </label>
-                </li>
-                <li class="sizes__item">
-                  <label class="sizes__label">
-                    <input
-                      class="sizes__radio sr-only"
-                      type="radio"
-                      name="sizes-item"
-                      value="128"
-                      checked=""
-                    />
-                    <span class="sizes__value"> 128gb </span>
-                  </label>
-                </li>
-              </ul>
-            </fieldset>
+            <ProductCapacity
+              v-if="product.capacity"
+              :capacities="product.capacity"
+              :product-id="product.id"
+              v-model="currentItemCapacity"
+            />
 
             <div class="item__row">
               <div class="form__counter">
@@ -205,6 +124,7 @@
                 </button>
 
                 <input
+                  readonly
                   type="text"
                   v-model.number="productAmount"
                   name="count"
@@ -293,23 +213,24 @@
 </template>
 
 <script>
-/* eslint-disable */
-
 import goToPage from '@/helpers/goToPage';
 import numberFormat from '@/helpers/numberFormat';
 import products from '@/data/products';
 import categories from '@/data/categories';
 import ProductColors from '@/components/ProductColors.vue';
+import ProductCapacity from '@/components/ProductCapacity.vue';
 
 export default {
   data() {
     return {
-      currentItemColor: this.$route.params.color || 0,
+      currentItemColor: '',
+      currentItemCapacity: '',
       productAmount: 1,
     };
   },
   components: {
     ProductColors,
+    ProductCapacity,
   },
   filters: {
     numberFormat,
@@ -324,12 +245,20 @@ export default {
       );
     },
   },
+  mounted() {
+    this.currentItemColor = this.$route.params.color || this.product.colors[0];
+    this.currentItemCapacity = this.product.capacity
+      ? this.product.capacity[0]
+      : '';
+  },
   methods: {
     goToPage,
     addToCart() {
       this.$store.commit('addProductToCart', {
         productId: this.product.id,
         amount: this.productAmount,
+        color: this.currentItemColor,
+        capacity: this.currentItemCapacity,
       });
     },
   },

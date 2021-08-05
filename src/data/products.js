@@ -12,6 +12,7 @@ export default [{
   price: 21990,
   image: '/img/realme.jpg',
   colors: ['#8BE000', '#FF6B00', '#F00'],
+  capacity: ['64GB', '128GB', '256GB'],
 }, {
   id: 1002,
   categoryId: 2,
@@ -33,6 +34,7 @@ export default [{
   price: 10590,
   image: '/img/kindle.jpg',
   colors: ['#73B6EA', '#FFBE15', '#939393'],
+  capacity: ['4GB'],
 }, {
   id: 1005,
   categoryId: 5,
@@ -99,10 +101,11 @@ export default [{
 }, {
   id: 1014,
   categoryId: 4,
-  title: 'Смартфон Xiaomi Mi Mix 3 6/128GB',
+  title: 'Смартфон Xiaomi Mi Mix 3',
   price: 21790,
   image: '/img/phone.jpg',
   colors: ['#F00', '#FFF', '#000'],
+  capacity: ['32GB', '64GB', '128GB', '256GB'],
 }, {
   id: 1015,
   categoryId: 9,
@@ -113,17 +116,19 @@ export default [{
 }, {
   id: 1016,
   categoryId: 4,
-  title: 'Смартфон Xiaomi Mi A3 4/64GB Android One',
+  title: 'Смартфон Xiaomi Mi A3 Android One',
   price: 14960,
   image: '/img/phone-2.jpg',
   colors: ['#73B6EA', '#FFBE15', '#939393'],
+  capacity: ['64GB', '128GB', '256GB'],
 }, {
   id: 1017,
   categoryId: 4,
-  title: 'Смартфон Xiaomi Redmi 6/128GB',
+  title: 'Смартфон Xiaomi Redmi 6',
   price: 8960,
   image: '/img/phone-3.jpg',
   colors: ['#F00', '#FFF', '#000'],
+  capacity: ['64GB', '128GB', '256GB'],
 }, {
   id: 1018,
   categoryId: 9,

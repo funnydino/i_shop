@@ -22,8 +22,10 @@
           <ul class="cart__list">
             <CartItem
               v-for="item in products"
-              :key="item.productId"
+              :key="item.productId + item.color + (item.capacity ? '_' + item.capacity : '')"
               :item="item"
+              :color="item.color"
+              :capacity="item.capacity ? item.capacity : ''"
             />
           </ul>
         </div>
