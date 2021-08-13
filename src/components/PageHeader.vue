@@ -10,7 +10,6 @@
           height="33"
         />
       </router-link>
-
       <a class="header__tel" href="tel:8 800 600 90 09"> 8 800 600 90 09 </a>
       <CartIndicator />
     </div>

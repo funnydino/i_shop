@@ -1,6 +1,9 @@
 <template>
   <router-link
-    class="header__cart"
+    :class="[
+      'header__cart',
+      { 'header__cart--loading': this.$store.state.cartParams.cartUpdate },
+    ]"
     :to="{ name: 'cart' }"
     aria-label="Корзина с товарами"
   >
@@ -18,4 +21,15 @@ export default {};
 </script>
 
 <style scoped>
+.header__cart--loading svg,
+.header__cart--loading span {
+  display: none;
+}
+.header__cart--loading {
+  background-color: transparent;
+  background-image: url('../assets/preloader_green.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
 </style>

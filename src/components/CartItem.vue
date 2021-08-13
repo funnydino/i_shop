@@ -53,9 +53,11 @@
 
     <button
       class="product__del button-del"
+      :class="{ 'product__del-sending': productDelSending }"
+      :disabled="productDelSending"
       type="button"
       aria-label="Удалить товар из корзины"
-      @click.prevent="deleteProduct(item.productId)"
+      @click.prevent="deleteFromCart()"
     >
       <svg width="20" height="20" fill="currentColor">
         <use xlink:href="#icon-close"></use>
@@ -65,10 +67,17 @@
 </template>
 
 <script>
+/* eslint-disable */
 import numberFormat from '@/helpers/numberFormat';
-import { mapMutations } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
+  data() {
+    return {
+      productDeleted: false,
+      productDelSending: false,
+    };
+  },
   props: ['item', 'color', 'capacity'],
   filters: {
     numberFormat,
@@ -79,17 +88,27 @@ export default {
         return this.item.amount;
       },
       set(value) {
-        this.$store.commit('updateCartProductAmount', {
+        this.$store.dispatch('updateCartProductAmount', {
           productId: this.item.productId,
           amount: value,
-          color: this.item.color,
-          capacity: this.item.capacity,
+          // color: this.item.color,
+          // capacity: this.item.capacity,
         });
       },
     },
   },
   methods: {
-    ...mapMutations({ deleteProduct: 'deleteCartProduct' }),
+    ...mapActions(['deleteProductFromCart']),
+    deleteFromCart() {
+      (this.productDeleted = false),
+        (this.productDelSending = true),
+        this.deleteProductFromCart({
+          productId: this.item.productId,
+        }).then(() => {
+          this.productDeleted = true;
+          this.productDelSending = false;
+        });
+    },
   },
 };
 </script>
@@ -109,7 +128,11 @@ export default {
 .amount-btn:disabled {
   cursor: not-allowed;
 }
-
+.product__pic img {
+  height: 120px;
+  width: auto;
+  border-radius: 15px;
+}
 .product__info--color {
   grid-row: 1/4;
 }
@@ -123,5 +146,53 @@ export default {
   margin-left: 5px;
   vertical-align: middle;
   box-shadow: 0 0 3px #bebebe;
+}
+
+.product__del {
+  position: relative;
+  cursor: pointer;
+}
+
+.product__del svg {
+  transition: transform 0.35s ease;
+}
+
+.product__del::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 100%;
+  height: 1px;
+  background-color: transparent;
+  transition: bottom 0.35s ease, background-color 0.35s ease;
+}
+
+.product__del:hover svg {
+  transform: rotate(90deg);
+}
+
+.product__del:hover::after {
+  bottom: -3px;
+  background-color: #333;
+}
+
+.product__del.product__del-sending svg {
+  display: none;
+}
+
+.product__del.product__del-sending {
+  background-image: url('../assets/preloader.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.product__del-sending {
+  cursor: not-allowed;
+}
+
+.product__del-sending::after {
+  display: none;
 }
 </style>

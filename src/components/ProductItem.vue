@@ -7,11 +7,7 @@
         params: { id: product.id, color: this.currentItemColor },
       }"
     >
-      <img
-        :src="product.image"
-        :srcset="getAdaptiveImage(product.image)"
-        :alt="product.title"
-      />
+      <img :src="product.image" :alt="product.title" />
     </router-link>
 
     <h3 class="catalog__title">
@@ -37,14 +33,14 @@
   </li>
 </template>
 <script>
-import goToPage from '@/helpers/goToPage';
+// import goToPage from '@/helpers/goToPage';
 import numberFormat from '@/helpers/numberFormat';
 import ProductColors from './ProductColors.vue';
 
 export default {
   data() {
     return {
-      currentItemColor: this.product.colors[0],
+      currentItemColor: this.product.colors[0].code,
     };
   },
   filters: {
@@ -53,16 +49,14 @@ export default {
   components: { ProductColors },
   props: ['product'],
   methods: {
-    goToPage,
-    getAdaptiveImage(image) {
-      return image.replace('.jpg', '@2x.jpg 2x');
-    },
+    // goToPage,
   },
 };
 </script>
 <style scoped>
 .catalog__pic img {
   border-radius: 15px;
+  object-fit: contain;
   box-shadow: 0 0 5px #9e9e9e;
   transition: box-shadow 0.35s ease;
 }

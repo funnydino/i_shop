@@ -1,16 +1,20 @@
 <template>
   <ul :class="className">
-    <li class="colors__item" v-for="color in colors" :key="productId + color">
-      <label class="colors__label">
+    <li
+      class="colors__item"
+      v-for="color in colors"
+      :key="productId + color.id"
+    >
+      <label class="colors__label" :title="color.title">
         <input
           class="colors__radio sr-only"
           type="radio"
           :name="'colors#' + productId"
-          :value="color"
+          :value="color.code"
           v-model="currentItemColor"
           @change="changeProductColor"
         />
-        <span class="colors__value" :style="'background-color: ' + color">
+        <span class="colors__value" :style="'background-color: ' + color.code">
         </span>
       </label>
     </li>

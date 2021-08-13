@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     'quotes': ['error', 'single'],
     'func-names': 'off',
+    "import/prefer-default-export": "off",
     "prefer-destructuring": ["error", {
       "AssignmentExpression": {
         "array": false,

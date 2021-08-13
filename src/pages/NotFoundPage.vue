@@ -1,5 +1,5 @@
 <template>
-  <main class="content container">
+  <main class="content container not__found">
     <h1>Страница не найдена</h1>
     <router-link class="to-main__link" :to="{ name: 'main' }">
       Вернуться на главную страницу
@@ -8,16 +8,36 @@
 </template>
 
 <script>
-import goToPage from '@/helpers/goToPage';
+// import goToPage from '@/helpers/goToPage';
 
 export default {
   methods: {
-    goToPage,
+    // goToPage,
   },
 };
 </script>
 
-<style scoped>
+<style>
+main {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+.not__found {
+  text-align: center;
+}
+
+.not__found::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: 250px;
+  background: #fff url('../assets/404.svg') no-repeat center/contain;
+  transform: translate(-50%, -50%);
+}
+
 .to-main__link {
   position: relative;
 }

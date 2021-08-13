@@ -1,5 +1,20 @@
 <template>
-  <main class="content container">
+  <main
+    class="content container product__load product__load-loading"
+    v-if="productLoading"
+  >
+    <h2>Загрузка товара...</h2>
+  </main>
+  <main
+    class="content container product__load not__found"
+    v-else-if="!productData"
+  >
+    <h2>Не удалось загрузить товар</h2>
+    <router-link class="to-main__link" :to="{ name: 'main' }">
+      Вернуться на главную страницу
+    </router-link>
+  </main>
+  <main class="content container" v-else-if="productData">
     <div class="content__top">
       <ul class="breadcrumbs">
         <li class="breadcrumbs__item">
@@ -10,7 +25,7 @@
         <li class="breadcrumbs__item">
           <router-link
             class="breadcrumbs__link"
-            :to="{ name: 'main', params: { filter: product.categoryId } }"
+            :to="{ name: 'main', params: { filter: product.category.id } }"
           >
             {{ category.title }}
           </router-link>
@@ -27,7 +42,7 @@
           <img
             width="570"
             height="570"
-            :src="product.image"
+            :src="product.image.file.url"
             :alt="product.title"
           />
         </div>
@@ -142,10 +157,19 @@
                 </button>
               </div>
 
-              <button class="button button--primery" type="submit">
-                В корзину
+              <button
+                class="button button--primery"
+                :class="{ 'btn-sending': productAddSending }"
+                type="submit"
+                :disabled="productAddSending"
+              >
+                <span v-show="!productAddSending">В корзину</span>
               </button>
             </div>
+            <div v-show="productAddSending">
+              Добавляем товар товар в корзину...
+            </div>
+            <div v-show="productAdded">Товар добавлен в корзину</div>
           </form>
         </div>
       </div>
@@ -213,12 +237,14 @@
 </template>
 
 <script>
-import goToPage from '@/helpers/goToPage';
+/* eslint-disable */
+// import goToPage from '@/helpers/goToPage';
 import numberFormat from '@/helpers/numberFormat';
-import products from '@/data/products';
-import categories from '@/data/categories';
 import ProductColors from '@/components/ProductColors.vue';
 import ProductCapacity from '@/components/ProductCapacity.vue';
+import axios from 'axios';
+import { API_BASE_URL } from '../config';
+import { mapActions } from 'vuex';
 
 export default {
   data() {
@@ -226,6 +252,11 @@ export default {
       currentItemColor: '',
       currentItemCapacity: '',
       productAmount: 1,
+      productData: null,
+      productLoading: false,
+      productLoadingFailed: false,
+      productAdded: false,
+      productAddSending: false,
     };
   },
   components: {
@@ -237,35 +268,72 @@ export default {
   },
   computed: {
     product() {
-      return products.find((product) => product.id === +this.$route.params.id);
+      return this.productData;
     },
     category() {
-      return categories.find(
-        (category) => category.id === this.product.categoryId,
-      );
+      return this.productData.category;
     },
   },
-  mounted() {
-    this.currentItemColor = this.$route.params.color || this.product.colors[0];
-    this.currentItemCapacity = this.product.capacity
-      ? this.product.capacity[0]
-      : '';
-  },
+  mounted() {},
   methods: {
-    goToPage,
+    // goToPage,
+    ...mapActions(['addProductToCart']),
     addToCart() {
-      this.$store.commit('addProductToCart', {
-        productId: this.product.id,
-        amount: this.productAmount,
-        color: this.currentItemColor,
-        capacity: this.currentItemCapacity,
-      });
+      (this.productAdded = false),
+        (this.productAddSending = true),
+        this.addProductToCart({
+          productId: this.product.id,
+          amount: this.productAmount,
+          // color: this.currentItemColor,
+          // capacity: this.currentItemCapacity,
+        }).then(() => {
+          this.productAdded = true;
+          this.productAddSending = false;
+        });
+    },
+    loadProduct() {
+      this.productLoading = true;
+      this.productLoadingFailed = false;
+      axios
+        .get(API_BASE_URL + '/api/products/' + this.$route.params.id)
+        .then((response) => (this.productData = response.data))
+        .then(
+          () =>
+            (this.currentItemColor =
+              this.$route.params.color || this.product.colors[0].code),
+        )
+        .catch(() => (this.productLoadingFailed = true))
+        .then(() => (this.productLoading = false));
+    },
+  },
+  watch: {
+    '$route.params.id': {
+      handler() {
+        this.loadProduct();
+      },
+      immediate: true,
     },
   },
 };
 </script>
 
 <style scoped>
+.product__load {
+  text-align: center;
+}
+.product__load-loading::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 65px;
+  height: 65px;
+  background: #fff url('../assets/preloader.svg') no-repeat center/contain;
+  transform: translate(-50%, -50%);
+}
+.item__row {
+  margin-bottom: 10px;
+}
 .amount-btn {
   cursor: pointer;
   transition: background-color 0.35s ease;
@@ -278,5 +346,19 @@ export default {
 }
 .amount-btn:disabled {
   cursor: not-allowed;
+}
+.pics__wrapper img {
+  max-height: 570px;
+}
+.button--primery.btn-sending {
+  background-color: #fff;
+  background-image: url('../assets/preloader.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50px auto;
+  cursor: not-allowed;
+}
+.btn-sending:disabled {
+  opacity: 1;
 }
 </style>
