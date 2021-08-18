@@ -14,6 +14,7 @@ module.exports = {
     'quotes': ['error', 'single'],
     'func-names': 'off',
     "import/prefer-default-export": "off",
+    "operator-linebreak": [2, "after"],
     "prefer-destructuring": ["error", {
       "AssignmentExpression": {
         "array": false,

@@ -201,7 +201,9 @@ export default {
       return this.categoriesData ? this.categoriesData.items : [];
     },
     colors() {
-      return this.colorsData ? this.colorsData.items : [];
+      return this.colorsData
+        ? this.colorsData.items.slice(0, this.colorsData.items.length - 1)
+        : [];
     },
   },
   watch: {

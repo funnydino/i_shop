@@ -18,8 +18,16 @@ export default new Vuex.Store({
       cartUpdate: false,
       cartUpdated: false,
     },
+    orderInfo: null,
   },
   mutations: {
+    updateOrderInfo(state, orderInfo) {
+      state.orderInfo = orderInfo;
+    },
+    resetCart(state) {
+      state.cartProducts = [];
+      state.cartProductsData = [];
+    },
     updateCartProductAmount(state, {
       productId,
       amount,
@@ -72,8 +80,21 @@ export default new Vuex.Store({
       return getters.cartDetailProducts.reduce((acc, item) => item
         .amount + acc, 0);
     },
+    deliveryCost(state, getters) {
+      const cost = Math.ceil(getters.cartTotalPrice / 10000) * 100;
+      return (cost > 0 && cost < 500) ? 500 : cost;
+    },
   },
   actions: {
+    loadOrderInfo(context, orderId) {
+      return axios.get(`${API_BASE_URL}/api/orders/${orderId}`, {
+          params: {
+            userAccessKey: context.state.userAccessKey,
+          },
+        })
+        .then(response =>
+          context.commit('updateOrderInfo', response.data));
+    },
     loadCart(context) {
       context.commit('cartStatusUpdate', {
         cartUpdate: true,
