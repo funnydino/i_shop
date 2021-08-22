@@ -1,5 +1,7 @@
 # i_shop
 
+<p>Вёрстка интернет-магазина с использованием библиотеки Vue.js и фреймворка Vue-CLI.</p>
+
 ## Project setup
 ```
 npm install
